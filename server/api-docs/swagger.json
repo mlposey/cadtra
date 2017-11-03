@@ -1,0 +1,985 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "The Cadtra REST API",
+    "version": "0.1.0",
+    "title": "Cadtra",
+    "contact": {
+      "email": "marcusposey@gmail.com"
+    }
+  },
+  "host": "srv.marcusposey.com:8000",
+  "basePath": "/api/v1",
+  "tags": [
+    {
+      "name": "users",
+      "description": "User-specific data queries"
+    },
+    {
+      "name": "clubs",
+      "description": "Groups of runners that share information"
+    }
+  ],
+  "schemes": [
+    "http"
+  ],
+  "securityDefinitions": {
+    "Bearer": {
+      "description": "This is a Google OAuth 2.0 ID token. The integrity of the token must be verified by Google before the API can use it. https://developers.google.com/identity/sign-in/android/backend-auth for details.",
+      "type": "apiKey",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "paths": {
+    "/users": {
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Create a new user.",
+        "description": "Use a Google ID token to create a new user.",
+        "responses": {
+          "201": {
+            "description": "User created",
+            "schema": {
+              "$ref": "#/definitions/PrivateProfile"
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "409": {
+            "description": "User already exists"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/{id}": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get a user's public profile.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user",
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Profile retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/PublicProfile"
+            }
+          },
+          "404": {
+            "description": "ID does not match any user"
+          }
+        }
+      }
+    },
+    "/users/me": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get the user's private profile.",
+        "description": "Retrieves the profile of the user indicated by the authorization token.",
+        "responses": {
+          "200": {
+            "description": "User information retrieved",
+            "schema": {
+              "$ref": "#/definitions/PrivateProfile"
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me/preferences": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Retrieve the user's preferences.",
+        "description": "Retrieves the preferences of the user indicated by the authorization token.",
+        "responses": {
+          "200": {
+            "description": "User preferences retrieved",
+            "schema": {
+              "$ref": "#/definitions/UserPreferences"
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Modify the user's preferences.",
+        "description": "Modifies the preferences of the user indicated by the authorization token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The same JSON descriptor that would be returned by GET /users/me/preferences but with changes made to the desired fields.",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/UserPreferences"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User preferences updated"
+          },
+          "400": {
+            "description": "Invalid auth token or preference values"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me/relations": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get a list of the user's relations.",
+        "description": "Retrieves the relations of the user indicated by the authorization token. Relations describe the context of a user's interaction with another user or club.",
+        "responses": {
+          "200": {
+            "description": "Retrieved relations",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/UserRelation"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Creates a new relation.",
+        "description": "Creates a new relation between the owner of the authorization token and another user or club.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewUserRelation"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Relation created"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account is not registered or target does not exist"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me/relations/{id}": {
+      "put": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Modify a user relation.",
+        "description": "Accept or decline a pending relation held by the user indicated by the authorization token.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The relation ID",
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "action",
+            "in": "query",
+            "description": "How the relation should be modified",
+            "required": true,
+            "type": "string",
+            "enum": [
+              "accept",
+              "decline"
+            ]
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relation modified"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered or relation does not exist"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "delete": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Delete a user relation.",
+        "description": "Removes a relation held by the user indicated by the authorization token.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Relation deleted"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered or relation does not exist"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/users/me/logs": {
+      "get": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Get a complete list of run history.",
+        "description": "Retrieves the full running history of the user indicated by the authorization token.",
+        "responses": {
+          "200": {
+            "description": "Retrieved logs",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/RunLog"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "users"
+        ],
+        "summary": "Create a new run log.",
+        "description": "Logs a new run for the user indicated by the authorization token.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewRunLog"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Log created"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "404": {
+            "description": "Account not registered"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clubs": {
+      "get": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Get all clubs.",
+        "description": "This action is only performable by an admin account.",
+        "responses": {
+          "200": {
+            "description": "Successfully retrieved list",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/Club"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "403": {
+            "description": "Not an admin"
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Create a new club.",
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "description": "The details for the new club",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewClub"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Club created"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "409": {
+            "description": "Club name is taken"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clubs/{id}": {
+      "get": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Get a specific club.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The club ID",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Club details retrieved successfully",
+            "schema": {
+              "$ref": "#/definitions/Club"
+            }
+          },
+          "404": {
+            "description": "ID does not belong to any club"
+          }
+        }
+      },
+      "delete": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Delete a club.",
+        "description": "This action can only be performed by the club owner.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Club deleted"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "403": {
+            "description": "Clubs may only be deleted by their owner."
+          },
+          "404": {
+            "description": "ID does not belong to any club"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clubs/{id}/members": {
+      "get": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Get all users belonging to the club.",
+        "description": "This action can only be performed by members of the club.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The club ID",
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Club members retrieved successfully",
+            "schema": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/ClubMember"
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "403": {
+            "description": "Not a member of requested club"
+          },
+          "404": {
+            "description": "ID does not belong to any club"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      },
+      "post": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Add a new user to a club.",
+        "description": "This action can only be performed by admins of the club.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The club ID",
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/NewClubMember"
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Club member added successfully"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "403": {
+            "description": "Not an admin of requested club"
+          },
+          "404": {
+            "description": "ID does not belong to any club"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    },
+    "/clubs/{id}/members/{member-id}": {
+      "delete": {
+        "tags": [
+          "clubs"
+        ],
+        "summary": "Remove a user from a club.",
+        "description": "This action can only be performed by an admin of the club or the member that will be removed.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "description": "The club ID",
+            "type": "integer",
+            "format": "int64"
+          },
+          {
+            "name": "member-id",
+            "in": "path",
+            "required": true,
+            "description": "The ID of the user to remove",
+            "type": "integer",
+            "format": "int64"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "User removed"
+          },
+          "400": {
+            "description": "Invalid token supplied"
+          },
+          "401": {
+            "description": "Missing bearer token"
+          },
+          "403": {
+            "description": "Not an admin or the user"
+          },
+          "404": {
+            "description": "Club or user does not exist"
+          }
+        },
+        "security": [
+          {
+            "Bearer": []
+          }
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "PublicProfile": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "description": "The user's display name",
+          "type": "string"
+        },
+        "avatar": {
+          "description": "The URL of the user's avatar picture",
+          "type": "string"
+        },
+        "since": {
+          "description": "The user's account creation timestamp",
+          "type": "string",
+          "format": "date-time"
+        },
+        "country": {
+          "description": "The user's country",
+          "type": "string"
+        }
+      }
+    },
+    "PrivateProfile": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "description": "The user's unique id",
+          "type": "integer",
+          "format": "int64"
+        },
+        "email": {
+          "description": "The user's unique email address",
+          "type": "string"
+        },
+        "name": {
+          "description": "The user's display name",
+          "type": "string"
+        },
+        "avatar": {
+          "description": "The URL of the user's avatar picture",
+          "type": "string"
+        },
+        "since": {
+          "description": "The user's account creation timestamp",
+          "type": "string",
+          "format": "date-time"
+        },
+        "country": {
+          "description": "The user's country",
+          "type": "string"
+        }
+      }
+    },
+    "UserPreferences": {
+      "type": "object",
+      "properties": {
+        "uses-metric": {
+          "type": "boolean",
+          "default": false
+        }
+      }
+    },
+    "UserRelation": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "context": {
+          "description": "The type of relation",
+          "type": "string",
+          "enum": [
+            "friend",
+            "club",
+            "blocked"
+          ]
+        },
+        "sender-id": {
+          "type": "integer"
+        },
+        "receiver-id": {
+          "type": "integer"
+        },
+        "has-accepted": {
+          "description": "True if the relation was accepted by the other party. False if it is still pending.",
+          "type": "boolean"
+        }
+      }
+    },
+    "NewUserRelation": {
+      "description": "Information required to post a new log",
+      "type": "object",
+      "properties": {
+        "context": {
+          "description": "The type of relation",
+          "type": "string",
+          "enum": [
+            "friend",
+            "club",
+            "blocked"
+          ]
+        },
+        "target": {
+          "description": "The ID of the person or club",
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "RunLog": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "user-id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "started-at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended-at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "polyline": {
+          "description": "A polyline describes a route on a map. See https://developers.google.com/maps/documentation/utilities/polylinealgorithm",
+          "type": "string"
+        },
+        "distance": {
+          "type": "number",
+          "format": "double"
+        },
+        "split-interval": {
+          "description": "The distance between splits (e.g., split every 1 mile)",
+          "type": "number",
+          "format": "double"
+        },
+        "splits": {
+          "description": "The time taken to complete each split",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "comment": {
+          "description": "Optional user comment on the run",
+          "type": "string"
+        }
+      }
+    },
+    "NewRunLog": {
+      "description": "Information required to POST a new log",
+      "type": "object",
+      "properties": {
+        "started-at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "ended-at": {
+          "type": "string",
+          "format": "date-time"
+        },
+        "polyline": {
+          "description": "A polyline describes a route on a map. See https://developers.google.com/maps/documentation/utilities/polylinealgorithm",
+          "type": "string"
+        },
+        "distance": {
+          "type": "number",
+          "format": "double"
+        },
+        "split-interval": {
+          "description": "The distance between splits (e.g., split every 1 mile)",
+          "type": "number",
+          "format": "double"
+        },
+        "splits": {
+          "description": "The time taken to complete each split",
+          "type": "array",
+          "items": {
+            "type": "number",
+            "format": "double"
+          }
+        },
+        "comment": {
+          "description": "Optional user comment on the run",
+          "type": "string"
+        }
+      }
+    },
+    "Club": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "name": {
+          "type": "string"
+        },
+        "avatar": {
+          "description": "The URL of the club's avatar picture",
+          "type": "string"
+        },
+        "since": {
+          "description": "The club's creation timestamp",
+          "type": "string"
+        },
+        "owner": {
+          "description": "The ID of the user that controls the club",
+          "type": "integer",
+          "format": "int64"
+        },
+        "member-count": {
+          "type": "integer",
+          "format": "int64"
+        }
+      }
+    },
+    "NewClub": {
+      "type": "object",
+      "description": "Format for creating new clubs",
+      "properties": {
+        "name": {
+          "description": "A unique name for the club",
+          "type": "string"
+        },
+        "avatar": {
+          "description": "The URL of the club's avatar picture. Can be left blank",
+          "type": "string"
+        }
+      }
+    },
+    "ClubMember": {
+      "type": "object",
+      "description": "A member of a club",
+      "properties": {
+        "id": {
+          "description": "The user's ID",
+          "type": "integer",
+          "format": "int64"
+        },
+        "profile": {
+          "$ref": "#/definitions/PublicProfile"
+        },
+        "role": {
+          "type": "string"
+        },
+        "since": {
+          "description": "When the user joined the club",
+          "type": "string",
+          "format": "date-time"
+        }
+      }
+    },
+    "NewClubMember": {
+      "type": "object",
+      "description": "Information required to initiate a club member",
+      "properties": {
+        "id": {
+          "description": "The user's ID",
+          "type": "integer",
+          "format": "int64"
+        },
+        "role": {
+          "type": "string"
+        }
+      }
+    },
+    "ErrorResponse": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "description": "A unique code for the error",
+          "type": "integer",
+          "format": "int64"
+        },
+        "message": {
+          "description": "A short description of the error",
+          "type": "string"
+        },
+        "details": {
+          "description": "An explanation of what caused the error",
+          "type": "string"
+        }
+      }
+    }
+  }
+}

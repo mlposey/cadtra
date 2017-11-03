@@ -1,0 +1,38 @@
+version: '3'
+services:
+  database:
+    build: ./database
+    restart: always
+    environment:
+      - POSTGRES_USER=cadtra
+      - POSTGRES_DB=cadtra
+      - POSTGRES_PASSWORD=$CADTRA_DB_PASSWORD
+    volumes:
+      - db-volume:/var/lib/postgresql/data
+
+  api:
+    build: ./src
+    restart: always
+    depends_on:
+      - database
+    environment:
+      - DATABASE_HOST=database
+      - DATABASE_NAME=cadtra
+      - DATABASE_USER=cadtra
+      - DATABASE_PASSWORD=$CADTRA_DB_PASSWORD
+      - CLIENT_ID
+    ports:
+      - 8000:8080
+
+  api-docs:
+    image: swaggerapi/swagger-ui
+    restart: always
+    environment:
+      - SWAGGER_JSON=/json/swagger.json
+    ports:
+      - 8080:8080
+    volumes:
+      - ./api-docs:/json
+
+volumes:
+  db-volume:

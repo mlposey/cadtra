@@ -1,0 +1,27 @@
+# This environment is used to run tests for the server.
+# Use it like so: docker-compose -f docker-compose.test.yaml up --build --abort-on-container-exit
+#
+# It does not include a documentation page and should not be
+# used for production or local setups. For those cases, refer
+# to docker-compose.yaml and docker-compose.local.yaml.
+version: '3'
+services:
+  database:
+      build: ./database
+      environment:
+      - POSTGRES_USER=test
+      - POSTGRES_DB=test
+      - POSTGRES_PASSWORD=test
+
+  api:
+    build:
+      context: ./src
+      dockerfile: Dockerfile.test
+    depends_on:
+    - database
+    environment:
+    - DATABASE_HOST=database
+    - DATABASE_NAME=test
+    - DATABASE_USER=test
+    - DATABASE_PASSWORD=test
+    - CLIENT_ID

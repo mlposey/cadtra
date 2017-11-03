@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "990777018112",
+    "project_id": "firebase-cadtra"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:990777018112:android:15bebfc0bdc8b2a1",
+        "android_client_info": {
+          "package_name": "com.marcusposey.cadtra"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "990777018112-r95idadiihs1ue00a1sd5gg59ruva4dq.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.marcusposey.cadtra",
+            "certificate_hash": "4eb945911f8bb370bd8d204d071cd37e8fc3fc02"
+          }
+        },
+        {
+          "client_id": "990777018112-j69s1pgk3rkm0g2fcqidaitj0tplrucq.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAoCdY8GI6IkczFtwLdeeblViqhTlG8m3c"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 1,
+          "other_platform_oauth_client": []
+        },
+        "ads_service": {
+          "status": 1
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

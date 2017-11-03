@@ -1,0 +1,15 @@
+FROM golang:1.9
+
+RUN apt-get update && apt-get install -y \
+    git \
+    bash
+
+WORKDIR /go/src/cadtra-server/src/
+COPY . .
+RUN go-wrapper download \
+ && go get -t -v ./...
+
+RUN git clone https://github.com/vishnubob/wait-for-it.git \
+ && mv wait-for-it/wait-for-it.sh .
+
+ENTRYPOINT /bin/bash wait-for-it.sh $DATABASE_HOST:5432 -t 0 -- go test -v .

@@ -1,0 +1,15 @@
+<resources>
+    <string name="app_name">Cadtra</string>
+    <string name="server_client_id">990777018112-96ghkqoi7mi3riatr57fl6jcph537mls.apps.googleusercontent.com</string>
+
+    <string name="distance">Miles</string>
+    <string name="time">Time</string>
+    <string name="pace">Pace</string>
+
+    <string name="Start">Start</string>
+    <string name="Stop">Stop</string>
+    <string name="Pause">Pause</string>
+    <string name="Resume">Resume</string>
+
+    <string name="save">Save Run</string>
+</resources>

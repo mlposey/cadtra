@@ -1,0 +1,19 @@
+Dev:
+[-] Finish model code.
+    [-] Relations database model
+    [ ] Clubs database model
+[ ] Write tests.
+    [ ] Model tests
+    [ ] Controller tests
+        This is difficult because we need a valid Google Id Token to make most
+        of the requests.
+[ ] Return full user profile when creating a new user.
+[ ] Asking for logs when none exist doesn't return a 404 status.
+[ ] Indicate what a Log's split interval is for. Is it duration? Distance?
+[ ] Use less precision for Log JSON responses.
+[ ] User avatars.
+    [ ] Default avatar
+    [ ] Custom avatars
+
+Ops:
+[ ] Create TeamCity config for the Go server code.
