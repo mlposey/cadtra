@@ -17,7 +17,10 @@ docker push mlposey/cadtra-db
 docker build -t mlposey/cadtra-api -f src/Dockerfile src/
 docker push mlposey/cadtra-api
 
-scp -r api-docs docker-compose.yaml $REMOTE:/home/marcusposey/cadtra
+docker build -t mlposey/cadtra-docs -f api-docs/Dockerfile api-docs/
+docker push mlposey/cadtra-docs
+
+scp docker-compose.yaml $REMOTE:/home/marcusposey/cadtra
 
 ssh $REMOTE << EOF
     cd ~/cadtra
