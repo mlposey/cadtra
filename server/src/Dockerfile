@@ -2,7 +2,7 @@ FROM golang:1.9 as builder
 
 RUN apt-get update && apt-get install -y git
 
-WORKDIR /go/src/cadtra-server/src/
+WORKDIR /go/src/cadtra/server/src/
 COPY . .
 
 RUN go-wrapper download \

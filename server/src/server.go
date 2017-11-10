@@ -1,8 +1,8 @@
 package main
 
 import (
-	"cadtra-server/src/controller"
-	"cadtra-server/src/model"
+	"cadtra/server/src/controller"
+	"cadtra/server/src/model"
 	"log"
 	"os"
 )

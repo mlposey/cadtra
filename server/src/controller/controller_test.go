@@ -1,8 +1,8 @@
 package controller_test
 
 import (
-	"cadtra-server/src/controller"
-	"cadtra-server/src/model"
+	"cadtra/server/src/controller"
+	"cadtra/server/src/model"
 	"database/sql"
 	"fmt"
 	"log"
