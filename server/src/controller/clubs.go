@@ -1,7 +1,7 @@
 package controller
 
 import (
-	"cadtra-server/src/model"
+	"cadtra/server/src/model"
 	"net/http"
 )
 

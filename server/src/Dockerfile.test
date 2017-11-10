@@ -4,7 +4,7 @@ RUN apt-get update && apt-get install -y \
     git \
     bash
 
-WORKDIR /go/src/cadtra-server/src/
+WORKDIR /go/src/cadtra/server/src/
 COPY . .
 RUN go-wrapper download \
  && go get -t -v ./...

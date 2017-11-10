@@ -1,13 +1,14 @@
 package controller
 
 import (
-	"cadtra-server/src/model"
+	"cadtra/server/src/model"
+	"encoding/json"
 	"errors"
-	"github.com/gorilla/mux"
 	"log"
 	"net"
 	"net/http"
-	"encoding/json"
+
+	"github.com/gorilla/mux"
 )
 
 // Service controls communication between outside applications (that send HTTP

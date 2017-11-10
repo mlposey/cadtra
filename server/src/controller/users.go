@@ -1,12 +1,13 @@
 package controller
 
 import (
-	"cadtra-server/src/model"
-	"net/http"
-	"github.com/gorilla/mux"
-	"strconv"
+	"cadtra/server/src/model"
 	"encoding/json"
 	logger "log"
+	"net/http"
+	"strconv"
+
+	"github.com/gorilla/mux"
 )
 
 // Users is a Controller implementation that handles routes for the users resource.
@@ -111,7 +112,7 @@ func (u *Users) getUser(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		model.WriteErrorResponse(w, http.StatusNotFound, 0,
 			"User not found",
-			"No user with the id " + mux.Vars(r)["id"] + " exists")
+			"No user with the id "+mux.Vars(r)["id"]+" exists")
 		return
 	}
 
@@ -173,11 +174,10 @@ func (u *Users) postRelations(w http.ResponseWriter, r *http.Request) {
 	// Todo
 }
 
-/*
 // GET /v1/users/me/relations
 func (u *Users) getRelations(w http.ResponseWriter, r *http.Request) {
 	// Todo
-}*/
+}
 
 // PUT /v1/users/me/relations/{id:[0-9]+}
 func (u *Users) putRelation(w http.ResponseWriter, r *http.Request) {
