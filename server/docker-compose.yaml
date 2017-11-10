@@ -25,14 +25,10 @@ services:
       - 8000:8080
 
   api-docs:
-    image: swaggerapi/swagger-ui
+    image: mlposey/cadtra-docs
     restart: always
-    environment:
-      - SWAGGER_JSON=/json/swagger.json
     ports:
       - 8080:8080
-    volumes:
-      - ./api-docs:/json
 
 volumes:
   db-volume:
