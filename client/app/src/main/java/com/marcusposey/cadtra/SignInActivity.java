@@ -47,18 +47,7 @@ public class SignInActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_sign_in);
 
-        GoogleSignInOptions gso = new GoogleSignInOptions
-                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestScopes(new Scope(Scopes.PROFILE))
-                .requestScopes(new Scope(Scopes.EMAIL))
-                .requestProfile()
-                .requestEmail()
-                .requestIdToken(getString(R.string.server_client_id))
-                .build();
-        googleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this /* FragmentActivity */, this /* OnConnectionFailedListener */)
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
-                .build();
+        googleApiClient = createApiClient();
 
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener((view) -> signIn(Method.EXPLICIT));
@@ -131,6 +120,29 @@ public class SignInActivity extends AppCompatActivity implements
         }
     }
 
+    /**
+     * Creates a GoogleApiClient for the sign in process
+     * The client will request the following scopes:
+     *  - Profile
+     *  - Email
+     * It will include access to an id token made by Google.
+     */
+    private GoogleApiClient createApiClient() {
+        GoogleSignInOptions gso = new GoogleSignInOptions
+                .Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+                .requestScopes(new Scope(Scopes.PROFILE))
+                .requestScopes(new Scope(Scopes.EMAIL))
+                .requestProfile()
+                .requestEmail()
+                .requestIdToken(getString(R.string.server_client_id))
+                .build();
+        return new GoogleApiClient.Builder(this)
+                .enableAutoManage(this, this)
+                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+                .build();
+    }
+
+    /** Called if googleApiClient cannot establish a connection */
     @Override
     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
         Toast.makeText(getApplicationContext(), "No connection", Toast.LENGTH_SHORT).show();
