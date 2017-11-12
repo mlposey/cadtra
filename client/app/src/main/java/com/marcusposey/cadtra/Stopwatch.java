@@ -3,20 +3,29 @@ package com.marcusposey.cadtra;
 import java.util.Observable;
 import java.util.concurrent.TimeUnit;
 
-/**
- * Keeps track of time and allows consumers to access the duration in string format
- */
+/** Keeps track of elapsed time */
 public class Stopwatch extends Observable implements Runnable {
     private long elapsedTime; // Total time (in seconds) taken since last reset
-    private long startTime;   // Last time start() was called
-    private long curTime;
+    private long startTime;   // Last time (in milliseconds) start() was called
+    private long curTime;     // The current time (in milliseconds)
+
+    // True if the stopwatch is currently measuring time; false otherwise
     private boolean isRunning = false;
+
+    // The thread where an ongoing measurement is taking place
     private Thread timer;
 
+    /** Returns true if the stopwatch is running; false otherwise */
     public boolean isRunning() {
         return isRunning;
     }
 
+    /**
+     * Starts the stopwatch
+     *
+     * If it was already running, nothing will happen. Consider checking
+     * the result of isRunning() if the state is not known.
+     */
     public void start() {
         if (isRunning()) return;
         isRunning = true;
@@ -25,6 +34,12 @@ public class Stopwatch extends Observable implements Runnable {
         timer.start();
     }
 
+    /**
+     * Stops the stopwatch
+     *
+     * If it was not running, nothing will happen. Consider checking
+     * the result of isRunning() if the state is not known.
+     */
     public void stop() {
         if (!isRunning()) return;
         isRunning = false;
@@ -34,6 +49,7 @@ public class Stopwatch extends Observable implements Runnable {
         timer = null;
     }
 
+    /** Resets the stopwatch, clearing all times */
     public void reset() {
         stop();
         elapsedTime = startTime = curTime = 0;
