@@ -29,7 +29,7 @@ import com.google.android.gms.common.api.Scope;
  * which should update the stored Id Token.
  */
 public class SignInActivity extends AppCompatActivity implements
-        GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+        GoogleApiClient.OnConnectionFailedListener  {
     /** Denotes the method used to carry out the sign in process */
     private enum Method { SILENT, EXPLICIT }
 
@@ -41,6 +41,7 @@ public class SignInActivity extends AppCompatActivity implements
 
     private GoogleApiClient googleApiClient;
 
+    /** Requests necessary sign in scopes and starts a silent sign-in process */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +60,8 @@ public class SignInActivity extends AppCompatActivity implements
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
-        findViewById(R.id.sign_in_button).setOnClickListener(this);
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+        signInButton.setOnClickListener((view) -> signIn(Method.EXPLICIT));
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setEnabled(false);
 
@@ -99,15 +100,6 @@ public class SignInActivity extends AppCompatActivity implements
         else {
             Log.v("SignInActivity", "Sign in failed; err " + result.getStatus().getStatusCode());
             Toast.makeText(getApplicationContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.sign_in_button:
-                signIn(Method.EXPLICIT);
-                break;
         }
     }
 
