@@ -33,7 +33,9 @@ public class SignInActivity extends AppCompatActivity implements
     // Extra key which indicates the activity was started solely to refresh an id token
     public static final String REFRESH_REQUEST = "REFRESH_REQUEST";
 
+    // Request code for a Google Sign-In activity result
     private static final int RC_SIGN_IN = 9001;
+
     private final int EXPLICIT_SIGN_IN = 0;
     private final int SILENT_SIGN_IN = 1;
     private GoogleApiClient googleApiClient;
@@ -68,7 +70,6 @@ public class SignInActivity extends AppCompatActivity implements
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
             handleSignInResult(result, EXPLICIT_SIGN_IN);
