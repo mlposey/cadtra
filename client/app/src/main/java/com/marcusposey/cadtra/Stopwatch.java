@@ -1,10 +1,17 @@
 package com.marcusposey.cadtra;
 
 import java.util.Observable;
-import java.util.concurrent.TimeUnit;
 
-/** Keeps track of elapsed time */
+/**
+ * Keeps track of elapsed time
+ *
+ * Stopwatch is an Observable class that notifies observers every Stopwatch.kIntervalMs
+ * milliseconds. The String message contains the total time elapsed since the timer was
+ * started. The format is Hh:Mm:Ss
+ */
 public class Stopwatch extends Observable implements Runnable {
+    public static final int kIntervalMs = 1000;
+
     private long elapsedTime; // Total time (in seconds) taken since last reset
     private long startTime;   // Last time (in milliseconds) start() was called
     private long curTime;     // The current time (in milliseconds)
@@ -86,7 +93,7 @@ public class Stopwatch extends Observable implements Runnable {
             setChanged();
             notifyObservers(convertTime(elapsedTime + (curTime - startTime) / 1000));
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+                Thread.sleep(Stopwatch.kIntervalMs);
             } catch (InterruptedException e) {e.printStackTrace();}
         }
     }
