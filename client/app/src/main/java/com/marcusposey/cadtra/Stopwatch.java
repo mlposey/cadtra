@@ -28,7 +28,7 @@ public class Stopwatch extends Observable implements Runnable {
     }
 
     /**
-     * Starts the stopwatch
+     * Starts the stopwatch in another thread
      *
      * If it was already running, nothing will happen. Consider checking
      * the result of isRunning() if the state is not known.
@@ -85,6 +85,10 @@ public class Stopwatch extends Observable implements Runnable {
         return format;
     }
 
+    /**
+     * Starts the stopwatch in the current thread
+     * Do not use this. Use start() instead.
+     */
     @Override
     public void run() {
         startTime = System.currentTimeMillis();
