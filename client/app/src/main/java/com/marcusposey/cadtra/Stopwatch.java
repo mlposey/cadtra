@@ -1,22 +1,38 @@
 package com.marcusposey.cadtra;
 
 import java.util.Observable;
-import java.util.concurrent.TimeUnit;
 
 /**
- * Keeps track of time and allows consumers to access the duration in string format
+ * Keeps track of elapsed time
+ *
+ * Stopwatch is an Observable class that notifies observers every Stopwatch.kIntervalMs
+ * milliseconds. The String message contains the total time elapsed since the timer was
+ * started. The format is Hh:Mm:Ss
  */
 public class Stopwatch extends Observable implements Runnable {
+    public static final int kIntervalMs = 1000;
+
     private long elapsedTime; // Total time (in seconds) taken since last reset
-    private long startTime;   // Last time start() was called
-    private long curTime;
+    private long startTime;   // Last time (in milliseconds) start() was called
+    private long curTime;     // The current time (in milliseconds)
+
+    // True if the stopwatch is currently measuring time; false otherwise
     private boolean isRunning = false;
+
+    // The thread where an ongoing measurement is taking place
     private Thread timer;
 
+    /** Returns true if the stopwatch is running; false otherwise */
     public boolean isRunning() {
         return isRunning;
     }
 
+    /**
+     * Starts the stopwatch in another thread
+     *
+     * If it was already running, nothing will happen. Consider checking
+     * the result of isRunning() if the state is not known.
+     */
     public void start() {
         if (isRunning()) return;
         isRunning = true;
@@ -25,6 +41,12 @@ public class Stopwatch extends Observable implements Runnable {
         timer.start();
     }
 
+    /**
+     * Stops the stopwatch
+     *
+     * If it was not running, nothing will happen. Consider checking
+     * the result of isRunning() if the state is not known.
+     */
     public void stop() {
         if (!isRunning()) return;
         isRunning = false;
@@ -34,6 +56,7 @@ public class Stopwatch extends Observable implements Runnable {
         timer = null;
     }
 
+    /** Resets the stopwatch, clearing all times */
     public void reset() {
         stop();
         elapsedTime = startTime = curTime = 0;
@@ -62,6 +85,10 @@ public class Stopwatch extends Observable implements Runnable {
         return format;
     }
 
+    /**
+     * Starts the stopwatch in the current thread
+     * Do not use this. Use start() instead.
+     */
     @Override
     public void run() {
         startTime = System.currentTimeMillis();
@@ -70,7 +97,7 @@ public class Stopwatch extends Observable implements Runnable {
             setChanged();
             notifyObservers(convertTime(elapsedTime + (curTime - startTime) / 1000));
             try {
-                Thread.sleep(TimeUnit.SECONDS.toMillis(1));
+                Thread.sleep(Stopwatch.kIntervalMs);
             } catch (InterruptedException e) {e.printStackTrace();}
         }
     }
