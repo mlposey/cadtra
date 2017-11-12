@@ -30,14 +30,15 @@ import com.google.android.gms.common.api.Scope;
  */
 public class SignInActivity extends AppCompatActivity implements
         GoogleApiClient.OnConnectionFailedListener, View.OnClickListener {
+    /** Denotes the method used to carry out the sign in process */
+    private enum Method { SILENT, EXPLICIT }
+
     // Extra key which indicates the activity was started solely to refresh an id token
     public static final String REFRESH_REQUEST = "REFRESH_REQUEST";
 
     // Request code for a Google Sign-In activity result
     private static final int RC_SIGN_IN = 9001;
 
-    private final int EXPLICIT_SIGN_IN = 0;
-    private final int SILENT_SIGN_IN = 1;
     private GoogleApiClient googleApiClient;
 
     @Override
@@ -63,7 +64,7 @@ public class SignInActivity extends AppCompatActivity implements
         signInButton.setSize(SignInButton.SIZE_STANDARD);
         signInButton.setEnabled(false);
 
-        signIn(SILENT_SIGN_IN);
+        signIn(Method.SILENT);
     }
 
     @Override
@@ -72,11 +73,11 @@ public class SignInActivity extends AppCompatActivity implements
 
         if (requestCode == RC_SIGN_IN) {
             GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
-            handleSignInResult(result, EXPLICIT_SIGN_IN);
+            handleSignInResult(result, Method.EXPLICIT);
         }
     }
 
-    private void handleSignInResult(GoogleSignInResult result, int context) {
+    private void handleSignInResult(GoogleSignInResult result, final Method context) {
         if (result != null && result.isSuccess()) {
             // Signed in successfully, show authenticated UI.
             GoogleSignInAccount acct = result.getSignInAccount();
@@ -90,7 +91,7 @@ public class SignInActivity extends AppCompatActivity implements
             Intent intent = new Intent(this, MainActivity.class);
             startActivity(intent);
         }
-        else if (result != null && context == SILENT_SIGN_IN) {
+        else if (result != null && context == Method.SILENT) {
             // prompt explicit sign in.
             Log.i("signin", "failed silent sign in");
             findViewById(R.id.sign_in_button).setEnabled(true);
@@ -105,15 +106,15 @@ public class SignInActivity extends AppCompatActivity implements
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.sign_in_button:
-                signIn(EXPLICIT_SIGN_IN);
+                signIn(Method.EXPLICIT);
                 break;
         }
     }
 
     /** Sign in using a google account */
-    private void signIn(int context) {
+    private void signIn(final Method context) {
         OptionalPendingResult<GoogleSignInResult> opr = Auth.GoogleSignInApi.silentSignIn(googleApiClient);
-        if (opr != null && context == SILENT_SIGN_IN) {
+        if (opr != null && context == Method.SILENT) {
             handleGooglePendingResult(opr);
         }
         else { // Start an explicit sign in process.
@@ -126,13 +127,13 @@ public class SignInActivity extends AppCompatActivity implements
         if (pendingResult.isDone()) {
             // There's immediate result available.
             GoogleSignInResult signInResult = pendingResult.get();
-            handleSignInResult(signInResult, SILENT_SIGN_IN);
+            handleSignInResult(signInResult, Method.SILENT);
         } else {
             // There's no immediate result ready,  waits for the async callback.
             pendingResult.setResultCallback(new ResultCallback<GoogleSignInResult>() {
                 @Override
                 public void onResult(@NonNull GoogleSignInResult signInResult) {
-                    handleSignInResult(signInResult, SILENT_SIGN_IN);
+                    handleSignInResult(signInResult, Method.SILENT);
                 }
             });
         }
