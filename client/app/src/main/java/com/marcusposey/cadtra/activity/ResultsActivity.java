@@ -1,10 +1,12 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.activity;
 
 import android.graphics.Color;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
+
+import com.marcusposey.cadtra.R;
 
 public class ResultsActivity extends AppCompatActivity {
     private final String LOG_TAG = "RESULTS_ACTIVITY";

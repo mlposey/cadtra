@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.activity;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
@@ -18,6 +18,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
+import com.marcusposey.cadtra.R;
+import com.marcusposey.cadtra.model.Account;
 import com.marcusposey.cadtra.net.RequestFactory;
 import com.marcusposey.cadtra.net.TokenStore;
 

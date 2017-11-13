@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.model;
 
 import java.util.Observable;
 

@@ -5,8 +5,8 @@ import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
-import com.marcusposey.cadtra.RunLog;
-import com.marcusposey.cadtra.WorkoutSession;
+import com.marcusposey.cadtra.model.RunLog;
+import com.marcusposey.cadtra.model.WorkoutSession;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;

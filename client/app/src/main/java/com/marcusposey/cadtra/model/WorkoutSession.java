@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.model;
 
 import com.google.android.gms.maps.model.LatLng;
 import com.google.maps.android.PolyUtil;

@@ -1,6 +1,7 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.model;
 
 import com.google.gson.annotations.SerializedName;
+
 import org.joda.time.DateTime;
 
 /** API representation of a run log, ready to be encoded as JSON */

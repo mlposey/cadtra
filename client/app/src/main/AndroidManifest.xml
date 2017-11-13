@@ -12,7 +12,7 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name=".activity.MainActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SignInActivity"
+            android:name=".activity.SignInActivity"
             android:screenOrientation="portrait" />
 
         <meta-data
@@ -32,9 +32,9 @@
             android:value="AIzaSyCX_SO2Kjwe4UFPqBtmbcgoHxtCenpGrbU" />
 
         <activity
-            android:name=".ResultsActivity"
+            android:name=".activity.ResultsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".HistoryActivity"
+        <activity android:name=".activity.HistoryActivity"
             android:screenOrientation="portrait"></activity>
     </application>
 
