@@ -18,7 +18,7 @@ import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
-import com.marcusposey.cadtra.net.RemoteService;
+import com.marcusposey.cadtra.net.RequestFactory;
 import com.marcusposey.cadtra.net.TokenStore;
 
 /**
@@ -73,11 +73,17 @@ public class SignInActivity extends AppCompatActivity implements
             GoogleSignInAccount acct = result.getSignInAccount();
             Log.v("SignInActivity", acct.getIdToken());
 
-            RemoteService.getInstance().setIdToken(acct.getIdToken());
             TokenStore.getInstance().setIdToken(acct.getIdToken());
 
             if (!getIntent().getBooleanExtra(REFRESH_REQUEST, false)) {
-                RemoteService.getInstance().getOrCreateAccount();
+                // Maybe we'll need this later to display their picture
+                // or name in the UI.
+                Account userAccount = new Account
+                        .Factory(new RequestFactory(this)).fromNetwork();
+                if (userAccount == null) {
+                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT);
+                    return;
+                }
             }
             finish();
         }
