@@ -19,6 +19,7 @@ import com.google.android.gms.common.api.OptionalPendingResult;
 import com.google.android.gms.common.api.ResultCallback;
 import com.google.android.gms.common.api.Scope;
 import com.marcusposey.cadtra.net.RemoteService;
+import com.marcusposey.cadtra.net.TokenStore;
 
 /**
  * Acquires a Google Id Token from the user
@@ -75,7 +76,12 @@ public class SignInActivity extends AppCompatActivity implements
 
             RemoteService.getInstance().setIdToken(acct.getIdToken());
             // If they just wanted an updated token, don't send them to the main activity.
-            if (getIntent().getBooleanExtra(REFRESH_REQUEST, false)) finish();
+            if (getIntent().getBooleanExtra(REFRESH_REQUEST, false)) {
+                Intent response = new Intent();
+                response.putExtra(TokenStore.TOKEN_EXTRA, acct.getIdToken());
+                setResult(0, response);
+                finish();
+            }
 
             RemoteService.getInstance().getOrCreateAccount(); // todo: store response.
             Intent intent = new Intent(this, MainActivity.class);

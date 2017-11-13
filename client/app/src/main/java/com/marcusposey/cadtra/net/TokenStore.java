@@ -7,6 +7,9 @@ import com.marcusposey.cadtra.SignInActivity;
 
 /** Starts SignInActivity to refresh and store an Id Token */
 public class TokenStore extends Activity {
+    // Intent tag for extras that store the id token
+    public static final String TOKEN_EXTRA = "TOKEN";
+
     private String idToken;
 
     /** Gets the last token retrieved or a new one if none exists */
@@ -25,6 +28,6 @@ public class TokenStore extends Activity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        idToken = data.getDataString();
+        idToken = data.getStringExtra(TOKEN_EXTRA);
     }
 }
