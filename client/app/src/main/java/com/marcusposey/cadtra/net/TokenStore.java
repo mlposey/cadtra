@@ -9,6 +9,11 @@ import com.marcusposey.cadtra.SignInActivity;
 public class TokenStore {
     private static TokenStore instance;
 
+    // The last time the id token was refreshed
+    // Id Tokens last one hour before they need to be renewed.
+    private long lastRefresh;
+    private final int msInHour = 3600 * 1000;
+
     // Intent tag for extras that store the id token
     public static final String TOKEN_EXTRA = "TOKEN";
 
@@ -35,10 +40,16 @@ public class TokenStore {
         idToken = token;
     }
 
-    /** Attempts to refresh the id token */
+    /** Refreshes the token if it is nearing expiration */
     public synchronized void refresh(Activity parent) {
+        if (lastRefresh != 0 && (System.currentTimeMillis() - lastRefresh) < msInHour / 2) {
+            // Refresh only after 30 minutes, even though the token
+            // lasts an hour.
+            return;
+        }
         Intent silentSignIn = new Intent(parent, SignInActivity.class);
         silentSignIn.putExtra(SignInActivity.REFRESH_REQUEST, true);
         parent.startActivity(silentSignIn);
+        lastRefresh = System.currentTimeMillis();
     }
 }
