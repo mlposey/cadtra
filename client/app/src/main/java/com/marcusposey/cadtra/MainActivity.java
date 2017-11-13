@@ -31,6 +31,7 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
 import com.marcusposey.cadtra.net.ApiRequest;
 import com.marcusposey.cadtra.net.RequestFactory;
+import com.marcusposey.cadtra.net.TokenStore;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -259,7 +260,6 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .calculcateDistanceMiles()
                 .build();
 
-        //RemoteService.getInstance(this).uploadRunLog(session);
         RequestFactory factory = new RequestFactory(this);
         try {
             new ApiRequest()
@@ -282,6 +282,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         intent.putExtra(ResultsActivity.PACE_EXTRA,
                 ((TextView) findViewById(R.id.paceDisplay)).getText().toString());
 
+        // Calling refresh from the ListActivity results in a crash, so
+        // we'll just do it here.
+        TokenStore.getInstance().refresh(this);
         startActivity(intent);
     }
 
