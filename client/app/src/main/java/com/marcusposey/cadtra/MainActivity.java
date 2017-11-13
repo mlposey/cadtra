@@ -29,6 +29,7 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
+import com.marcusposey.cadtra.net.RemoteService;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
