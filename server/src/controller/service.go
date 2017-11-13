@@ -9,6 +9,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/mux"
+	"github.com/rs/cors"
 )
 
 // Service controls communication between outside applications (that send HTTP
@@ -73,7 +74,8 @@ func (service *Service) Start() error {
 		net.Dial("tcp", "localhost:"+service.port)
 		log.Println("And we're live.")
 	}()
-	return http.ListenAndServe(":"+service.port, service.Router)
+	corsHandler := cors.Default().Handler(service.Router)
+	return http.ListenAndServe(":"+service.port, corsHandler)
 }
 
 func WriteJSONResponse(w http.ResponseWriter, status int, respObj interface{}) {
