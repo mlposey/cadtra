@@ -5,29 +5,40 @@ import android.content.Intent;
 
 import com.marcusposey.cadtra.SignInActivity;
 
-/** Starts SignInActivity to refresh and store an Id Token */
-public class TokenStore extends Activity {
+/** Stores the user's id token */
+public class TokenStore {
+    private static TokenStore instance;
+
     // Intent tag for extras that store the id token
     public static final String TOKEN_EXTRA = "TOKEN";
 
     private String idToken;
 
-    /** Gets the last token retrieved or a new one if none exists */
-    public String getIdToken() {
-        if (idToken.isEmpty()) refresh();
+    private TokenStore() {}
+
+    /** Returns the single instance of the user's token */
+    public static synchronized TokenStore getInstance() {
+        if (instance == null) instance = new TokenStore();
+        return instance;
+    }
+
+    /**
+     * Gets the last token retrieved or a new one if none exists
+     * @return null if TokenStore is not attached to an Activity
+     */
+    public synchronized String getIdToken() {
         return idToken;
     }
 
-    /** Attempts to refresh the id token token */
-    public void refresh() {
-        Intent silentSignIn = new Intent(this, SignInActivity.class);
-        silentSignIn.putExtra(SignInActivity.REFRESH_REQUEST, true);
-        startActivityForResult(silentSignIn, 0 /* code doesn't matter */);
+    /** Sets the id token */
+    public synchronized void setIdToken(String token) {
+        idToken = token;
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        idToken = data.getStringExtra(TOKEN_EXTRA);
+    /** Attempts to refresh the id token */
+    public synchronized void refresh(Activity parent) {
+        Intent silentSignIn = new Intent(parent, SignInActivity.class);
+        silentSignIn.putExtra(SignInActivity.REFRESH_REQUEST, true);
+        parent.startActivity(silentSignIn);
     }
 }

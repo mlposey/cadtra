@@ -1,5 +1,6 @@
 package com.marcusposey.cadtra.net;
 
+import android.app.Activity;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -17,11 +18,13 @@ import java.net.URL;
 
 /** Creates HTTP requests that can be sent to an ApiRequest */
 public class RequestFactory {
-    private static final String LOG_TAG = "REQUEST_FACTORY";
-
     // Stores the user's id token
-    private TokenStore tokenStore = new TokenStore();
+    private TokenStore tokenStore = TokenStore.getInstance();
     private final Gson gson = new Gson();
+
+    public RequestFactory(Activity parent) {
+        tokenStore.refresh(parent);
+    }
 
     /**
      * Creates a POST request containing a run log
@@ -41,7 +44,7 @@ public class RequestFactory {
             writeJSONBody(req, gson.toJson(log));
             injectIdToken(req);
         } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(RequestFactory.class.getSimpleName(), e.getMessage());
         }
 
         return req;
@@ -59,7 +62,7 @@ public class RequestFactory {
             req = new HttpGet(resource.toURI());
             injectIdToken(req);
         } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(RequestFactory.class.getSimpleName(), e.getMessage());
         }
 
         return req;
@@ -77,7 +80,7 @@ public class RequestFactory {
             req = new HttpGet(resource.toURI());
             injectIdToken(req);
         } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(RequestFactory.class.getSimpleName(), e.getMessage());
         }
 
         return req;
@@ -91,7 +94,7 @@ public class RequestFactory {
             req = new HttpPost(resource.toURI());
             injectIdToken(req);
         } catch (Exception e) {
-            Log.e(LOG_TAG, e.getMessage());
+            Log.e(RequestFactory.class.getSimpleName(), e.getMessage());
         }
 
         return req;
@@ -107,14 +110,13 @@ public class RequestFactory {
             req.setEntity(respBody);
             req.setHeader("Content-Type", "application/json");
         } catch (IOException e) {
-            e.printStackTrace();
+            Log.e(RequestFactory.class.getSimpleName(), e.getMessage());
         }
     }
 
     /** Adds the user's id token to req */
     private void injectIdToken(HttpUriRequest req) {
         // Todo: Refresh only when necessary.
-        tokenStore.refresh();
         req.setHeader("Authorization", "Bearer " + tokenStore.getIdToken());
     }
 }
