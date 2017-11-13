@@ -1,6 +1,7 @@
 package com.marcusposey.cadtra.net;
 
 import android.app.Activity;
+import android.support.annotation.Nullable;
 import android.util.Log;
 
 import com.google.gson.Gson;
@@ -32,6 +33,7 @@ public class RequestFactory {
      * Creates a POST request containing a run log
      * @return null if the process fails
      */
+    @Nullable
     public HttpUriRequest runLogPost(final WorkoutSession session) {
         HttpPost req = null;
 
@@ -56,6 +58,7 @@ public class RequestFactory {
      * Creates a GET request to retrieve all run logs
      * @return null if the process fails
      */
+    @Nullable
     public HttpUriRequest runLogsGet() {
         HttpGet req = null;
 
@@ -74,6 +77,7 @@ public class RequestFactory {
      * Creates a GET request to retrieve the user's profile
      * @return null if the process fails
      */
+    @Nullable
     public HttpUriRequest accountGet() {
         HttpGet req = null;
 
@@ -88,6 +92,11 @@ public class RequestFactory {
         return req;
     }
 
+    /**
+     * Creates a POST request to create a new account
+     * @return null if the process fails
+     */
+    @Nullable
     public HttpUriRequest accountPost() {
         HttpPost req = null;
 
