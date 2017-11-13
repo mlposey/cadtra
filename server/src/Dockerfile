@@ -17,7 +17,7 @@ FROM alpine:latest
 RUN apk --no-cache add bash ca-certificates
 
 WORKDIR /app
-COPY --from=builder /go/src/cadtra-server/src/api .
+COPY --from=builder /go/src/cadtra/server/src/api .
 COPY --from=builder /external/wait-for-it/wait-for-it.sh .
 
 ENTRYPOINT /bin/bash wait-for-it.sh $DATABASE_HOST:5432 -t 0 -- ./api
