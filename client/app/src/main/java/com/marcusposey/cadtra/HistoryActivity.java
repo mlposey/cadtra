@@ -5,6 +5,8 @@ import android.content.Context;
 import android.os.Bundle;
 import android.widget.Toast;
 
+import com.marcusposey.cadtra.net.RemoteService;
+
 /** Displays a list of all previous runs */
 public class HistoryActivity extends ListActivity {
 

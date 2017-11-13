@@ -8,6 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 
+import com.marcusposey.cadtra.net.RemoteService;
+
 public class ResultsActivity extends AppCompatActivity {
     private final String LOG_TAG = "RESULTS_ACTIVITY";
 

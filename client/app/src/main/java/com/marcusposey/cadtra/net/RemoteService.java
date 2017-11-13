@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.net;
 
 import android.app.Activity;
 import android.content.Context;
@@ -8,6 +8,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.marcusposey.cadtra.RunLog;
+import com.marcusposey.cadtra.SignInActivity;
+import com.marcusposey.cadtra.WorkoutSession;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
