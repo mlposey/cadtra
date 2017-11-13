@@ -19,7 +19,9 @@ public class TokenStore {
 
     private String idToken;
 
-    private TokenStore() {}
+    private TokenStore() {
+        lastRefresh = System.currentTimeMillis();
+    }
 
     /** Returns the single instance of the user's token */
     public static synchronized TokenStore getInstance() {
@@ -42,7 +44,7 @@ public class TokenStore {
 
     /** Refreshes the token if it is nearing expiration */
     public synchronized void refresh(Activity parent) {
-        if (lastRefresh != 0 && (System.currentTimeMillis() - lastRefresh) < msInHour / 2) {
+        if ((System.currentTimeMillis() - lastRefresh) < msInHour / 2) {
             // Refresh only after 30 minutes, even though the token
             // lasts an hour.
             return;

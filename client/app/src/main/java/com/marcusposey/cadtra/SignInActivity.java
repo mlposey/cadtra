@@ -53,7 +53,6 @@ public class SignInActivity extends AppCompatActivity implements
         SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
         signInButton.setOnClickListener((view) -> signIn(Method.EXPLICIT));
         signInButton.setSize(SignInButton.SIZE_STANDARD);
-        signInButton.setEnabled(false);
 
         signIn(Method.SILENT);
     }
@@ -76,17 +75,15 @@ public class SignInActivity extends AppCompatActivity implements
 
             RemoteService.getInstance().setIdToken(acct.getIdToken());
             TokenStore.getInstance().setIdToken(acct.getIdToken());
-            // If they just wanted an updated token, don't send them to the main activity.
-            if (getIntent().getBooleanExtra(REFRESH_REQUEST, false)) finish();
 
-            RemoteService.getInstance().getOrCreateAccount(); // todo: store response.
-            Intent intent = new Intent(this, MainActivity.class);
-            startActivity(intent);
+            if (!getIntent().getBooleanExtra(REFRESH_REQUEST, false)) {
+                RemoteService.getInstance().getOrCreateAccount();
+            }
+            finish();
         }
         else if (result != null && context == Method.SILENT) {
             // prompt explicit sign in.
             Log.i("signin", "failed silent sign in");
-            findViewById(R.id.sign_in_button).setEnabled(true);
         }
         else {
             Log.v("SignInActivity", "Sign in failed; err " + result.getStatus().getStatusCode());
