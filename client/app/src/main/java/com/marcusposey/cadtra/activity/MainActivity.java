@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.activity;
 
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -29,6 +29,9 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
+import com.marcusposey.cadtra.R;
+import com.marcusposey.cadtra.model.Stopwatch;
+import com.marcusposey.cadtra.model.WorkoutSession;
 import com.marcusposey.cadtra.net.ApiRequest;
 import com.marcusposey.cadtra.net.RequestFactory;
 import com.marcusposey.cadtra.net.TokenStore;

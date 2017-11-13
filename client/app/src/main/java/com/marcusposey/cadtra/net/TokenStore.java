@@ -3,7 +3,7 @@ package com.marcusposey.cadtra.net;
 import android.app.Activity;
 import android.content.Intent;
 
-import com.marcusposey.cadtra.SignInActivity;
+import com.marcusposey.cadtra.activity.SignInActivity;
 
 /** Stores the user's id token */
 public class TokenStore {

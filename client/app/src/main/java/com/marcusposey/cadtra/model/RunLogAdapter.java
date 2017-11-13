@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.model;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -6,6 +6,9 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
+
+import com.marcusposey.cadtra.R;
+import com.marcusposey.cadtra.model.RunLog;
 
 public class RunLogAdapter extends ArrayAdapter<RunLog> {
     private final Context context;

@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.model;
 
 import android.support.annotation.Nullable;
 import android.support.v4.util.Pair;

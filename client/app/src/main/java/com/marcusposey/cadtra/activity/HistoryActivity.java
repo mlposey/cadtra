@@ -1,4 +1,4 @@
-package com.marcusposey.cadtra;
+package com.marcusposey.cadtra.activity;
 
 import android.app.ListActivity;
 import android.content.Context;
@@ -9,6 +9,9 @@ import android.util.Log;
 import android.widget.Toast;
 
 import com.google.gson.Gson;
+import com.marcusposey.cadtra.R;
+import com.marcusposey.cadtra.model.RunLog;
+import com.marcusposey.cadtra.model.RunLogAdapter;
 import com.marcusposey.cadtra.net.ApiRequest;
 import com.marcusposey.cadtra.net.RequestFactory;
 
