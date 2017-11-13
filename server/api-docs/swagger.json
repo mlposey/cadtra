@@ -225,7 +225,7 @@
         "tags": [
           "users"
         ],
-        "summary": "Creates a new relation.",
+        "summary": "Create a new relation.",
         "description": "Creates a new relation between the owner of the authorization token and another user or club.",
         "parameters": [
           {
