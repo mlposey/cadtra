@@ -75,6 +75,9 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        Intent signIn = new Intent(this, SignInActivity.class);
+        startActivity(signIn);
+
         try { // Discourage api client access until permissions are sorted out.
             apiClientAccess.acquire();
         } catch (InterruptedException e) {
