@@ -6,7 +6,7 @@ import java.net.URL;
 /** Contains static information about the destination server */
 public class ServerInfo {
     public static final String host = "srv.marcusposey.com";
-    public static final int port = 80;
+    public static final int port = 8000;
 
     /**
      * Returns an HTTP URL to version 1.0 of the API
