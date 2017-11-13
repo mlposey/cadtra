@@ -29,7 +29,8 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
-import com.marcusposey.cadtra.net.RemoteService;
+import com.marcusposey.cadtra.net.ApiRequest;
+import com.marcusposey.cadtra.net.RequestFactory;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -258,7 +259,15 @@ public class MainActivity extends AppCompatActivity implements GoogleApiClient.C
                 .calculcateDistanceMiles()
                 .build();
 
-        RemoteService.getInstance(this).uploadRunLog(session);
+        //RemoteService.getInstance(this).uploadRunLog(session);
+        RequestFactory factory = new RequestFactory(this);
+        try {
+            new ApiRequest()
+                    .execute(factory.runLogPost(session))
+                    .get();
+        } catch (Exception e) {
+            Log.e(MainActivity.class.getName(), e.getMessage());
+        }
         displaySessionResults();
         resetSession();
     }

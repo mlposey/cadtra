@@ -27,15 +27,11 @@ public class ResultsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.timeView)).setText(extras.getString(TIME_EXTRA));
         ((TextView) findViewById(R.id.paceView)).setText(extras.getString(PACE_EXTRA));
 
-        findViewById(R.id.saveButton).setBackgroundColor(Color.GREEN);
+        findViewById(R.id.doneButton).setBackgroundColor(Color.GREEN);
     }
 
     /** Save the information about the run */
-    public void onSaveRunPressed(View view) {
-        // Todo: Find out if the http request is made here or when calling upload.
-        Pair<Integer, String> serverResult = RemoteService.getInstance().getResponse();
-        Log.i(LOG_TAG, String.valueOf(serverResult.first));
-        Log.i(LOG_TAG, serverResult.second);
+    public void onDonePressed(View view) {
         finish();
     }
 }

@@ -2,6 +2,7 @@ package com.marcusposey.cadtra.net;
 
 import android.os.AsyncTask;
 import android.support.v4.util.Pair;
+import android.util.Log;
 
 import org.apache.http.HttpResponse;
 import org.apache.http.client.HttpClient;
@@ -34,7 +35,7 @@ public class ApiRequest extends AsyncTask<HttpUriRequest, Void, Pair<Integer, St
         try {
             return getResponse(httpClient.execute(params[0]));
         } catch (Exception e) {
-            // Todo: Log this.
+            Log.e(ApiRequest.class.getSimpleName(), e.getMessage());
             return null;
         }
     }
@@ -49,6 +50,7 @@ public class ApiRequest extends AsyncTask<HttpUriRequest, Void, Pair<Integer, St
             String respBody = EntityUtils.toString(response.getEntity());
             return new Pair<>(response.getStatusLine().getStatusCode(), respBody);
         } catch (IOException e) {
+            Log.e(ApiRequest.class.getSimpleName(), e.getMessage());
             return null;
         }
     }
