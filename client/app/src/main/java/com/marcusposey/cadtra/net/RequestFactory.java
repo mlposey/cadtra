@@ -22,6 +22,8 @@ public class RequestFactory {
     private TokenStore tokenStore = TokenStore.getInstance();
     private final Gson gson = new Gson();
 
+    public RequestFactory() {}
+
     public RequestFactory(Activity parent) {
         tokenStore.refresh(parent);
     }
