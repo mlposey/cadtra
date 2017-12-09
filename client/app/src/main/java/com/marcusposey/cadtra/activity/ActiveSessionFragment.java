@@ -8,12 +8,12 @@ import android.graphics.Color;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -29,23 +29,14 @@ import com.google.android.gms.maps.model.PolylineOptions;
 import com.google.maps.android.SphericalUtil;
 import com.marcusposey.cadtra.R;
 import com.marcusposey.cadtra.model.Stopwatch;
-import com.marcusposey.cadtra.model.WorkoutSession;
-import com.marcusposey.cadtra.net.ApiRequest;
-import com.marcusposey.cadtra.net.RequestFactory;
 import com.marcusposey.cadtra.net.TokenStore;
-
-import org.joda.time.DateTime;
-import org.joda.time.DateTimeZone;
 
 import java.util.Observable;
 import java.util.Observer;
 
 /** Handles the current run session */
 public class ActiveSessionFragment extends Fragment implements LocationListener, OnMapReadyCallback,
-        Observer, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener,
-        View.OnClickListener {
-    // UTC timestamp of when the current session started
-    private String startTimestamptz;
+        Observer, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     // Keeps track of time since starting the session, excluding paused breaks
     private final Stopwatch stopwatch = new Stopwatch();
@@ -59,6 +50,8 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
 
     private Activity activity;
 
+    private SessionController controller;
+
     public ActiveSessionFragment() {
         // Required empty public constructor
     }
@@ -66,9 +59,7 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         activity = getActivity();
-
         View rootView = inflater.inflate(R.layout.fragment_active_session, container, false);
-        initButtons(rootView);
 
         MapFragment mapFragment = (MapFragment) getChildFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -76,16 +67,27 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
         stopwatch.addObserver(this);
         buildGoogleApiClient();
 
+        controller = new SessionController(this, stopwatch, e -> {
+            if (e != null) {
+                Toast.makeText(getContext(), "failed to upload session", Toast.LENGTH_LONG)
+                        .show();
+            } else {
+                displaySessionResults();
+                resetSession();
+            }
+        });
+        initButtons(rootView);
+
         return rootView;
     }
 
     private void initButtons(View view) {
         Button startStop = view.findViewById(R.id.startStopButton);
         startStop.setBackgroundColor(Color.GREEN);
-        startStop.setOnClickListener(this);
+        startStop.setOnClickListener(controller::onStartStop);
         Button pauseResume = view.findViewById(R.id.pauseResumeButton);
         pauseResume.setBackgroundColor(Color.YELLOW);
-        pauseResume.setOnClickListener(this);
+        pauseResume.setOnClickListener(controller::onPauseResume);
     }
 
     /** Builds a Google API client that is necessary to access location services */
@@ -146,54 +148,6 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
         routeMap.animateCamera(CameraUpdateFactory.zoomTo(10));
     }
 
-    /** Pauses or resumes the current session */
-    public void onPauseResume(Button button) {
-        if (button.getText() == getString(R.string.Pause) && stopwatch.isRunning()) {
-            button.setText(getString(R.string.Resume));
-            stopwatch.stop();
-        }
-        else if (button.getText() == getString(R.string.Resume) && !stopwatch.isRunning()){
-            button.setText(getString(R.string.Pause));
-            stopwatch.start();
-        }
-    }
-
-    /** Starts a run if none is in progress or stops the current one and prompts to save results */
-    public void onStartStop(Button button) {
-        Log.i("ActiveSessionFragment", "start/stop pressed");
-        if (button.getText() == getString(R.string.Start)) {
-            startTimestamptz = new DateTime(DateTimeZone.UTC).toString();
-            Log.i("time", startTimestamptz);
-            stopwatch.start();
-            button.setText(getString(R.string.Stop));
-            button.setBackgroundColor(Color.RED);
-            return;
-        }
-
-        finishSession(button);
-    }
-
-    /** Collects session results and prompts the user to act on them */
-    private void finishSession(Button startStop) {
-        stopwatch.stop();
-
-        WorkoutSession session = new WorkoutSession.Builder()
-                .addTimeSegment(startTimestamptz, new DateTime(DateTimeZone.UTC).toString())
-                .addRoute(path.getPoints())
-                .calculcateDistanceMiles()
-                .build();
-
-        RequestFactory factory = new RequestFactory(getActivity());
-        try {
-            new ApiRequest().execute(factory.runLogPost(session)).get();
-        } catch (Exception e) {
-            Log.e(MainActivity.class.getName(), e.getMessage());
-        }
-
-        displaySessionResults();
-        resetSession();
-    }
-
     /** Gathers results from the completed session and displays them in their own activity */
     private void displaySessionResults() {
         Intent intent = new Intent(activity, ResultsActivity.class);
@@ -242,17 +196,9 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
         });
     }
 
-    @Override
-    public void onClick(View v) {
-        switch (v.getId()) {
-            case R.id.startStopButton:
-                onStartStop((Button) v);
-                break;
-
-            case R.id.pauseResumeButton:
-                onPauseResume((Button) v);
-                break;
-        }
+    /** Returns the current path of the user since they pressed start */
+    public PolylineOptions getPath() {
+        return path;
     }
 
     @Override
