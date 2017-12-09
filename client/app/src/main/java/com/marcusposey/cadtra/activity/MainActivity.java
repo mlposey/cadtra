@@ -55,7 +55,6 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public void onBackPressed() {
         // Do nothing.
-        // They may have come from the Sign-In page, so we should not allow them to return there.
     }
 
     /** Requests permission to access fine-grained location services */
