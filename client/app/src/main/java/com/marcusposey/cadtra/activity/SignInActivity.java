@@ -1,5 +1,6 @@
 package com.marcusposey.cadtra.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
@@ -39,6 +40,9 @@ public class SignInActivity extends AppCompatActivity implements
     // Extra key which indicates the activity was started solely to refresh an id token
     public static final String REFRESH_REQUEST = "REFRESH_REQUEST";
 
+    // The key for the intent extra that stores a Google Id token
+    public static final String TOKEN_EXTRA = "TOKEN_EXTRA";
+
     // Request code for a Google Sign-In activity result
     private static final int RC_SIGN_IN = 9001;
 
@@ -71,23 +75,7 @@ public class SignInActivity extends AppCompatActivity implements
 
     private void handleSignInResult(GoogleSignInResult result, final Method context) {
         if (result != null && result.isSuccess()) {
-            // Signed in successfully, show authenticated UI.
-            GoogleSignInAccount acct = result.getSignInAccount();
-            Log.v("SignInActivity", acct.getIdToken());
-
-            TokenStore.getInstance().setIdToken(acct.getIdToken());
-
-            if (!getIntent().getBooleanExtra(REFRESH_REQUEST, false)) {
-                // Maybe we'll need this later to display their picture
-                // or name in the UI.
-                Account userAccount = new Account
-                        .Factory(new RequestFactory(this)).fromNetwork();
-                if (userAccount == null) {
-                    Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT);
-                    return;
-                }
-            }
-            finish();
+            handleSignInSuccess(result.getSignInAccount());
         }
         else if (result != null && context == Method.SILENT) {
             // prompt explicit sign in.
@@ -97,6 +85,28 @@ public class SignInActivity extends AppCompatActivity implements
             Log.v("SignInActivity", "Sign in failed; err " + result.getStatus().getStatusCode());
             Toast.makeText(getApplicationContext(), "Sign in failed", Toast.LENGTH_SHORT).show();
         }
+    }
+
+    private void handleSignInSuccess(GoogleSignInAccount acct) {
+        Log.v("SignInActivity", acct.getIdToken());
+
+        TokenStore.getInstance().setIdToken(acct.getIdToken());
+
+        if (!getIntent().getBooleanExtra(REFRESH_REQUEST, false)) {
+            // Maybe we'll need this later to display their picture
+            // or name in the UI.
+            Account userAccount = new Account.Factory(new RequestFactory(this))
+                    .fromNetwork();
+            if (userAccount == null) {
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT);
+                return;
+            }
+        }
+
+        Intent intent = new Intent();
+        intent.putExtra(TOKEN_EXTRA, acct.getIdToken());
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
     /** Sign in using a google account */
