@@ -24,8 +24,6 @@ public class ResultsActivity extends AppCompatActivity {
         ((TextView) findViewById(R.id.distanceView)).setText(extras.getString(DISTANCE_EXTRA));
         ((TextView) findViewById(R.id.timeView)).setText(extras.getString(TIME_EXTRA));
         ((TextView) findViewById(R.id.paceView)).setText(extras.getString(PACE_EXTRA));
-
-        findViewById(R.id.doneButton).setBackgroundColor(Color.GREEN);
     }
 
     /** Save the information about the run */
