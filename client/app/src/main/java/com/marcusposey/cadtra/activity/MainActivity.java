@@ -13,7 +13,7 @@ import android.view.MenuItem;
 import com.marcusposey.cadtra.R;
 
 /**
- * This activity displays information and controls for the current running session.
+ * Manages app permissions and the active session fragment
  *
  * Because the core of the app relies on geotracking, MainActivity must have fine location
  * permissions. The application will exit if a request for them is made but the user denies.
