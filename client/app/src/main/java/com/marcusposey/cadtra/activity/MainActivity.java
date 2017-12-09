@@ -1,5 +1,6 @@
 package com.marcusposey.cadtra.activity;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
@@ -21,6 +22,8 @@ import com.marcusposey.cadtra.R;
 public class MainActivity extends AppCompatActivity {
     // Unique id for checking permission request results; see onPermissionRequestResult
     private final int PERMISSIONS_REQUEST_FINE_LOCATION = 1;
+    // Request for a id token from the sign in activity
+    private final int SIGN_IN_REQUEST = 2;
 
     private ActiveSessionFragment activeSession;
 
@@ -30,9 +33,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Intent signIn = new Intent(this, SignInActivity.class);
-        startActivity(signIn);
-
-        requestLocationPermission();
+        startActivityForResult(signIn, SIGN_IN_REQUEST);
     }
 
     @Override
@@ -90,5 +91,12 @@ public class MainActivity extends AppCompatActivity {
         getFragmentManager().beginTransaction()
                 .replace(R.id.content_frame, activeSession)
                 .commit();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == SIGN_IN_REQUEST && resultCode == Activity.RESULT_OK) {
+            requestLocationPermission();
+        }
     }
 }
