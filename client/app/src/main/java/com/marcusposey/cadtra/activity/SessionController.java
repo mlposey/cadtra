@@ -62,7 +62,6 @@ public class SessionController {
             Log.i("time", startTimestamptz);
             stopwatch.start();
             button.setText(parent.getString(R.string.Stop));
-            button.setBackgroundColor(Color.RED);
             return;
         }
 

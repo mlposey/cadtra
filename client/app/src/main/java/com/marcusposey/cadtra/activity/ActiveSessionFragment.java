@@ -3,8 +3,10 @@ package com.marcusposey.cadtra.activity;
 import android.annotation.SuppressLint;
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
+import android.graphics.drawable.Drawable;
 import android.location.Location;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -83,10 +85,8 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
 
     private void initButtons(View view) {
         Button startStop = view.findViewById(R.id.startStopButton);
-        startStop.setBackgroundColor(Color.GREEN);
         startStop.setOnClickListener(controller::onStartStop);
         Button pauseResume = view.findViewById(R.id.pauseResumeButton);
-        pauseResume.setBackgroundColor(Color.YELLOW);
         pauseResume.setOnClickListener(controller::onPauseResume);
     }
 
@@ -175,7 +175,6 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
 
         Button startStop = activity.findViewById(R.id.startStopButton);
         startStop.setText(getString(R.string.Start));
-        startStop.setBackgroundColor(Color.GREEN);
 
         Button pauseResume = activity.findViewById(R.id.pauseResumeButton);
         pauseResume.setText(getString(R.string.Pause));
