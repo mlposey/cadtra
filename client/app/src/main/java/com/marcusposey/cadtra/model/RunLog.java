@@ -1,8 +1,13 @@
 package com.marcusposey.cadtra.model;
 
+import com.google.android.gms.maps.model.LatLng;
 import com.google.gson.annotations.SerializedName;
+import com.google.maps.android.PolyUtil;
+import com.google.maps.android.SphericalUtil;
 
 import org.joda.time.DateTime;
+
+import java.util.List;
 
 /** API representation of a run log, ready to be encoded as JSON */
 public class RunLog {
@@ -10,6 +15,8 @@ public class RunLog {
     private String startTimestampTz;
     @SerializedName("ended-at")
     private String endTimestampTz;
+    @SerializedName("duration")
+    private double durationSec;
     @SerializedName("polyline")
     private String polylinePath;
     @SerializedName("distance")
@@ -21,10 +28,12 @@ public class RunLog {
     @SerializedName("comment")
     private String comment;
 
-    public RunLog(String startTimestampTz, String endTimestampTz, String polylinePath,
-                  double distance, double splitInterval, double[] splits, String comment) {
+    public RunLog(String startTimestampTz, String endTimestampTz, double durationSec,
+                  String polylinePath, double distance, double splitInterval, double[] splits,
+                  String comment) {
         this.startTimestampTz = startTimestampTz;
         this.endTimestampTz = endTimestampTz;
+        this.durationSec = durationSec;
         this.polylinePath = polylinePath;
         this.distance = distance;
         this.splitInterval = splitInterval;
@@ -59,5 +68,74 @@ public class RunLog {
     public String getPace() {
         if (distance < 0.01) return "-";
         return Stopwatch.convertTime(getDurationSeconds() / distance);
+    }
+
+    /**
+     * Builds a RunLog using a variable number of parameters
+     *
+     * Data can be directly added using #add*(...) methods. Additional information
+     * can be inferred using #calculate*(...) methods. Assuming all add methods
+     * are called before calculate ones and the chain is closed by calling
+     * #build(), any combination of calls will result in a valid RunLog object.
+     */
+    public static class Builder {
+        private String startTimestampTz;
+        private String endTimestampTz;
+        private double durationSec;
+        List<LatLng> route;
+        private String polylinePath;
+        private String comment;
+        private double distance;
+        private double splitInterval;
+        private double[] splits = null;
+
+        public RunLog build() {
+            setDefaults();
+            return new RunLog(startTimestampTz, endTimestampTz, durationSec, polylinePath,
+                    distance, splitInterval, splits, comment);
+        }
+
+        private void setDefaults() {
+            if (splits == null) splits = new double[0];
+
+            if (durationSec == 0.0) {
+                DateTime start = DateTime.parse(startTimestampTz);
+                DateTime end = DateTime.parse(endTimestampTz);
+                durationSec = (end.getMillis() - start.getMillis()) / 1000;
+            }
+        }
+
+        public Builder addTimeSegment(String start, String end) {
+            startTimestampTz = start;
+            endTimestampTz = end;
+            return this;
+        }
+
+        public Builder addRoute(List<LatLng> route) {
+            this.route = route;
+            polylinePath = PolyUtil.encode(route);
+            return this;
+        }
+
+        public Builder addComment(String comment) {
+            this.comment = comment;
+            return this;
+        }
+
+        public Builder addSplitData(double splitInterval, double[] splits) {
+            this.splitInterval = splitInterval;
+            this.splits = splits;
+            return this;
+        }
+
+        public Builder calculateDistanceMeter() {
+            distance = SphericalUtil.computeLength(route);
+            return this;
+        }
+
+        public Builder calculcateDistanceMiles() {
+            distance = SphericalUtil.computeLength(route) * 0.00062137;
+            return this;
+        }
     }
 }
