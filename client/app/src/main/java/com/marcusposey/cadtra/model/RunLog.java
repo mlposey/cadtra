@@ -41,33 +41,17 @@ public class RunLog {
         this.comment = comment;
     }
 
-    /**
-     * Gets the duration of the run in seconds
-     * Ideally, this logic would be done once in the constructor and then getter methods use
-     * use the final value. However, RunLogs that are created through gson serialization will not
-     * invoke the constructor as intended.
-     */
-    private double getDurationSeconds() {
-        // TODO: Make the API specify a duration JSON property.
-        // Subtracting start from end does not factor in breaks the user could have taken. This
-        // will display an inaccurate average pace if the run was not completed in one go.
-
-        final DateTime start = DateTime.parse(startTimestampTz);
-        final DateTime end = DateTime.parse(endTimestampTz);
-        return (end.getMillis() - start.getMillis()) / 1000;
-    }
-
     public String getDistance() {
         return String.format("%.2f", distance);
     }
 
     public String getTime() {
-        return Stopwatch.convertTime(getDurationSeconds());
+        return Stopwatch.convertTime(durationSec);
     }
 
     public String getPace() {
         if (distance < 0.01) return "-";
-        return Stopwatch.convertTime(getDurationSeconds() / distance);
+        return Stopwatch.convertTime(durationSec / distance);
     }
 
     /**
