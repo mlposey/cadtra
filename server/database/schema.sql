@@ -79,6 +79,7 @@ CREATE TABLE logs (
   user_id int NOT NULL REFERENCES users(id),
   started_at timestamptz NOT NULL,
   ended_at timestamptz NOT NULL,
+  duration real NOT NULL,
   polyline text NOT NULL,
   distance real NOT NULL,
   split_interval real NOT NULL,

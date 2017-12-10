@@ -552,6 +552,9 @@ definitions:
       started-at:
         type: string
         format: date-time
+      duration:
+        type: number
+        format: double
       ended-at:
         type: string
         format: date-time
@@ -586,6 +589,9 @@ definitions:
       ended-at:
         type: string
         format: date-time
+      duration:
+        type: number
+        format: double
       polyline:
         description: >-
           A polyline describes a route on a map. See

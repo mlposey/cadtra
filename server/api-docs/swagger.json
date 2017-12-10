@@ -818,6 +818,10 @@
           "type": "string",
           "format": "date-time"
         },
+        "duration": {
+          "type": "number",
+          "format": "double"
+        },
         "polyline": {
           "description": "A polyline describes a route on a map. See https://developers.google.com/maps/documentation/utilities/polylinealgorithm",
           "type": "string"
@@ -856,6 +860,10 @@
         "ended-at": {
           "type": "string",
           "format": "date-time"
+        },
+        "duration": {
+          "type": "number",
+          "format": "double"
         },
         "polyline": {
           "description": "A polyline describes a route on a map. See https://developers.google.com/maps/documentation/utilities/polylinealgorithm",

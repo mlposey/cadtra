@@ -11,6 +11,8 @@ type Log struct {
 	UserId        int       `json:"user-id"`
 	StartedAt     time.Time `json:"started-at"`
 	EndedAt       time.Time `json:"ended-at"`
+	// Active time in seconds
+	Duration      float64   `json:"duration"`
 	Polyline      string    `json:"polyline"`
 	Distance      float64   `json:"distance"`
 	SplitInterval float64   `json:"split-interval"`
@@ -22,11 +24,11 @@ type Log struct {
 // log should have values for every field except Id.
 func (db *PsqlDB) AddRunLog(log *Log) error {
 	_, err := db.Exec(`
-		INSERT INTO logs (user_id, started_at, ended_at, polyline, distance,
-			split_interval, splits, comment)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)`,
-		log.UserId, log.StartedAt, log.EndedAt, log.Polyline, log.Distance,
-		log.SplitInterval, pq.Float64Array(log.Splits), log.Comment,
+		INSERT INTO logs (user_id, started_at, ended_at, duration, polyline,
+			distance, split_interval, splits, comment)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)`,
+		log.UserId, log.StartedAt, log.EndedAt, log.Duration, log.Polyline,
+		log.Distance, log.SplitInterval, pq.Float64Array(log.Splits), log.Comment,
 	)
 	return err
 }
@@ -46,8 +48,8 @@ func (db *PsqlDB) GetRunLogs(email string) ([]*Log, error) {
 		var splits pq.Float64Array
 		log := &Log{}
 		err = rows.Scan(&log.Id, &log.UserId, &log.StartedAt, &log.EndedAt,
-			&log.Polyline, &log.Distance, &log.SplitInterval, &splits,
-			&log.Comment)
+			&log.Duration, &log.Polyline, &log.Distance, &log.SplitInterval,
+			&splits, &log.Comment)
 
 		if err != nil {
 			return logs, err
