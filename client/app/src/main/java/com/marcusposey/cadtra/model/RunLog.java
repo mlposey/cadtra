@@ -73,10 +73,16 @@ public class RunLog {
     /**
      * Builds a RunLog using a variable number of parameters
      *
-     * Data can be directly added using #add*(...) methods. Additional information
-     * can be inferred using #calculate*(...) methods. Assuming all add methods
-     * are called before calculate ones and the chain is closed by calling
-     * #build(), any combination of calls will result in a valid RunLog object.
+     * Methods:
+     *  - add*
+     *      These store information about a run. All add methods must be called
+     *      before any others.
+     *  - calculate*
+     *      These create new data using information obtained from adds. Call them
+     *      after add* and before use*.
+     *  - use*
+     *      These change the format of data and should be called last but before
+     *      invoking the build() method.
      */
     public static class Builder {
         private String startTimestampTz;
@@ -103,11 +109,23 @@ public class RunLog {
                 DateTime end = DateTime.parse(endTimestampTz);
                 durationSec = (end.getMillis() - start.getMillis()) / 1000;
             }
+
+            if (distance == 0.0) distance = SphericalUtil.computeLength(route) * 0.00062137;
         }
 
+        /**
+         * Stores the time span between session start and end
+         * If the session was paused, this is not the actual duration since it
+         * includes the periods of inactivity.
+         */
         public Builder addTimeSegment(String start, String end) {
             startTimestampTz = start;
             endTimestampTz = end;
+            return this;
+        }
+
+        public Builder addDuration(double durationSec) {
+            this.durationSec = durationSec;
             return this;
         }
 
@@ -117,23 +135,18 @@ public class RunLog {
             return this;
         }
 
-        public Builder addComment(String comment) {
-            this.comment = comment;
-            return this;
-        }
-
         public Builder addSplitData(double splitInterval, double[] splits) {
             this.splitInterval = splitInterval;
             this.splits = splits;
             return this;
         }
 
-        public Builder calculateDistanceMeter() {
+        public Builder useMeters() {
             distance = SphericalUtil.computeLength(route);
             return this;
         }
 
-        public Builder calculcateDistanceMiles() {
+        public Builder useMiles() {
             distance = SphericalUtil.computeLength(route) * 0.00062137;
             return this;
         }
