@@ -6,7 +6,6 @@ import android.util.Log;
 
 import com.google.gson.Gson;
 import com.marcusposey.cadtra.model.RunLog;
-import com.marcusposey.cadtra.model.WorkoutSession;
 
 import org.apache.http.client.methods.HttpEntityEnclosingRequestBase;
 import org.apache.http.client.methods.HttpGet;
@@ -34,16 +33,12 @@ public class RequestFactory {
      * @return null if the process fails
      */
     @Nullable
-    public HttpUriRequest runLogPost(final WorkoutSession session) {
+    public HttpUriRequest runLogPost(final RunLog log) {
         HttpPost req = null;
 
         try {
             final URL resource = ServerInfo.getV1ResourceURL("/users/me/logs");
             req = new HttpPost(resource.toURI());
-            RunLog log = new RunLog(session.getStartTimestampTz(),
-                    session.getEndTimestampTz(), session.getPolylinePath(),
-                    session.getDistance(), session.getSplitInterval(),
-                    session.getSplits(), session.getComment());
 
             writeJSONBody(req, gson.toJson(log));
             injectIdToken(req);

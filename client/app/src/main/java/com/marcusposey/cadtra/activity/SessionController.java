@@ -1,14 +1,13 @@
 package com.marcusposey.cadtra.activity;
 
-import android.graphics.Color;
 import android.support.annotation.Nullable;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.marcusposey.cadtra.R;
+import com.marcusposey.cadtra.model.RunLog;
 import com.marcusposey.cadtra.model.Stopwatch;
-import com.marcusposey.cadtra.model.WorkoutSession;
 import com.marcusposey.cadtra.net.ApiRequest;
 import com.marcusposey.cadtra.net.RequestFactory;
 
@@ -72,7 +71,7 @@ public class SessionController {
     private void uploadSession() {
         stopwatch.stop();
 
-        WorkoutSession session = new WorkoutSession.Builder()
+        RunLog log = new RunLog.Builder()
                 .addTimeSegment(startTimestamptz, new DateTime(DateTimeZone.UTC).toString())
                 .addRoute(parent.getPath().getPoints())
                 .calculcateDistanceMiles()
@@ -80,7 +79,7 @@ public class SessionController {
 
         RequestFactory factory = new RequestFactory(parent.getActivity());
         try {
-            new ApiRequest().execute(factory.runLogPost(session)).get();
+            new ApiRequest().execute(factory.runLogPost(log)).get();
             listener.onPostNetRequest(null);
         } catch (Exception e) {
             listener.onPostNetRequest(e);
