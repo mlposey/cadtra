@@ -74,7 +74,7 @@ public class SessionController {
         RunLog log = new RunLog.Builder()
                 .addTimeSegment(startTimestamptz, new DateTime(DateTimeZone.UTC).toString())
                 .addRoute(parent.getPath().getPoints())
-                .calculcateDistanceMiles()
+                .addDuration(stopwatch.elapsedSeconds())
                 .build();
 
         RequestFactory factory = new RequestFactory(parent.getActivity());
