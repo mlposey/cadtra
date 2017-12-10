@@ -191,7 +191,7 @@ public class ActiveSessionFragment extends Fragment implements LocationListener,
             final double secondsTaken = stopwatch.elapsedSeconds();
             final String minutesPerMile = Stopwatch.convertTime(secondsTaken / milesTraveled);
             TextView paceDisplay = activity.findViewById(R.id.paceDisplay);
-            paceDisplay.setText(milesTraveled < 0.001 ? "-" : minutesPerMile);
+            paceDisplay.setText(milesTraveled < 0.01 ? "-" : minutesPerMile);
         });
     }
 
