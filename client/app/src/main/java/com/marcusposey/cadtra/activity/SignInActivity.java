@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.auth.api.Auth;
@@ -55,11 +56,6 @@ public class SignInActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_sign_in);
 
         googleApiClient = createApiClient();
-
-        SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
-        signInButton.setOnClickListener((view) -> signIn(Method.EXPLICIT));
-        signInButton.setSize(SignInButton.SIZE_STANDARD);
-
         signIn(Method.SILENT);
     }
 
@@ -78,8 +74,12 @@ public class SignInActivity extends AppCompatActivity implements
             handleSignInSuccess(result.getSignInAccount());
         }
         else if (result != null && context == Method.SILENT) {
-            // prompt explicit sign in.
-            Log.i("signin", "failed silent sign in");
+            Log.i("SignInActivity", "Failed silent sign in");
+
+            SignInButton signInButton = (SignInButton) findViewById(R.id.sign_in_button);
+            signInButton.setOnClickListener((view) -> signIn(Method.EXPLICIT));
+            signInButton.setSize(SignInButton.SIZE_STANDARD);
+            signInButton.setVisibility(View.VISIBLE);
         }
         else {
             Log.v("SignInActivity", "Sign in failed; err " + result.getStatus().getStatusCode());
@@ -98,7 +98,8 @@ public class SignInActivity extends AppCompatActivity implements
             Account userAccount = new Account.Factory(new RequestFactory(this))
                     .fromNetwork();
             if (userAccount == null) {
-                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT);
+                Toast.makeText(this, "Authentication failed", Toast.LENGTH_SHORT)
+                    .show();
                 return;
             }
         }
